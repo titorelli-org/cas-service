@@ -1,5 +1,5 @@
 import type { Logger } from "pino";
-import type { UserFilter } from "../types";
+import type { UserFilter } from "../../types";
 
 export class FilterChain implements UserFilter {
   constructor(private filters: UserFilter[], private logger: Logger) {}

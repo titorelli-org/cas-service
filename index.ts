@@ -8,17 +8,22 @@ import {
   totemsRepo,
   lolsRepo,
   combotRepo,
+  Immutable,
 } from "./lib";
 import { logger } from "./lib/logger";
 
 const service = new CasService(
   new Totems(totemsRepo),
   new FilterChain(
-    [new Lols(lolsRepo, logger), new Combot(combotRepo, logger)],
+    [
+      new Immutable(new Lols(lolsRepo, logger)),
+      new Immutable(new Combot(combotRepo, logger)),
+    ],
     logger,
   ),
   logger,
 );
+
 const server = fastify({ loggerInstance: logger });
 
 server.get<{

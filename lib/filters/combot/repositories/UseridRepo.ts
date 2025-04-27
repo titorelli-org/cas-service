@@ -1,6 +1,6 @@
-import { BaseRepository } from "../../knex-database";
+import { BaseRepository } from "../../../knex-database";
 import type { UseridRecord } from "../types";
-import { knexUnwrapCount } from "../../misc";
+import { knexUnwrapCount } from "../../../misc";
 
 export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
   add(tgUserId: number) {
@@ -10,7 +10,7 @@ export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
           tgUserId,
           createdAt: new Date().toISOString(),
         })
-        .into("lolsUserids")
+        .into("combotUserids")
         .returning<{ id: number }[]>(["id"]);
 
       return id;
@@ -19,7 +19,7 @@ export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
 
   remove(tgUserId: number) {
     return this.run(async (knex) => {
-      return knex.delete().from("lolsUserids").where("tgUserId", tgUserId);
+      return knex.delete().from("combotUserids").where("tgUserId", tgUserId);
     });
   }
 
@@ -27,7 +27,7 @@ export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
     return this.run(async (knex) => {
       const result = await knex
         .count("id")
-        .from("lolsUserids")
+        .from("combotUserids")
         .where("tgUserId", tgUserId)
         .first();
 
@@ -47,18 +47,18 @@ export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
     await this.run(async (knex) => {
       const record = await knex
         .select("id")
-        .from("lolsUserids")
+        .from("combotUserids")
         .where("tgUserId", tgUserId)
         .first<Pick<UseridRecord, "id">>();
 
       if (record) {
-        await knex("lolsUserids")
+        await knex("combotUserids")
           .update({ tgUserId, updatedAt: now.toISOString() })
           .where("id", record.id);
       } else {
         await knex
           .insert({ tgUserId, createdAt: now.toISOString() })
-          .into("lolsUserids");
+          .into("combotUserids");
       }
     });
   }

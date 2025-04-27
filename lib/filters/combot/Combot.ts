@@ -1,7 +1,7 @@
 import { Logger } from "pino";
 import { makePoller, type Poller } from "reactive-poller";
 import Papa from "papaparse";
-import { type UserFilter } from "../types";
+import { type UserFilter } from "../../types";
 import { type UseridRepo } from "./repositories/UseridRepo";
 
 export class Combot implements UserFilter {

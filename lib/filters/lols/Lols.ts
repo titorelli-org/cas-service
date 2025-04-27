@@ -1,5 +1,5 @@
 import { type Logger } from "pino";
-import { type UserFilter } from "../types";
+import { type UserFilter } from "../../types";
 import { type UseridRepo } from "./repositories/UseridRepo";
 import { makePoller, type Poller } from "reactive-poller";
 import { type BanListItem } from "./types";

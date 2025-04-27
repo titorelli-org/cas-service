@@ -1,6 +1,6 @@
-import { BaseRepository } from "../../knex-database";
+import { BaseRepository } from "../../../knex-database";
 import type { TotemRecord } from "../types";
-import { knexUnwrapCount } from "../../misc";
+import { knexUnwrapCount } from "../../../misc";
 
 export class TotemsRepo extends BaseRepository<TotemRecord, TotemRecord[]> {
   add(tgUserId: number) {

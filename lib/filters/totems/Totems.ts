@@ -1,4 +1,4 @@
-import { UserFilter } from "../types";
+import { UserFilter } from "../../types";
 import { TotemsRepo } from "./repositories/TotemsRepo";
 
 export class Totems implements UserFilter {
