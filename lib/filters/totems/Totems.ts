@@ -9,8 +9,10 @@ export class Totems implements UserFilter {
    * if user has totem, it means that
    * user should be not banned
    */
-  async has(tgUserId: number): Promise<boolean> {
-    return this.totemsRepo.contains(tgUserId);
+  async has(tgUserId: number): Promise<[boolean, string]> {
+    const passed = await this.totemsRepo.contains(tgUserId);
+
+    return [passed, "totem"];
   }
 
   async add(tgUserId: number): Promise<void> {

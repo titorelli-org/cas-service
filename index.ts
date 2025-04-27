@@ -27,7 +27,7 @@ const service = new CasService(
   logger,
 );
 
-const server = fastify({ loggerInstance: logger });
+const server = fastify({ loggerInstance: logger, trustProxy: true });
 
 server.get<{
   Querystring: {
@@ -47,9 +47,7 @@ server.get<{
     },
   },
   async ({ query: { tgUserId } }) => {
-    return {
-      banned: await service.isBanned(tgUserId),
-    };
+    return service.isBanned(tgUserId);
   },
 );
 

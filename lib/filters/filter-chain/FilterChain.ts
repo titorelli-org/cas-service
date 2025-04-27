@@ -4,14 +4,14 @@ import type { UserFilter } from "../../types";
 export class FilterChain implements UserFilter {
   constructor(private filters: UserFilter[], private logger: Logger) {}
 
-  async has(tgUserId: number): Promise<boolean> {
+  async has(tgUserId: number): Promise<[boolean, string]> {
     for (const filter of this.filters) {
-      const banned = await filter.has(tgUserId);
+      const [banned, reason] = await filter.has(tgUserId);
 
-      if (banned) return banned;
+      if (banned) return [banned, reason];
     }
 
-    return false;
+    return [false, "chain"];
   }
 
   async add(tgUserId: number): Promise<void> {

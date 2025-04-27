@@ -21,8 +21,10 @@ export class Lols implements UserFilter {
     this.poller.start();
   }
 
-  async has(tgUserId: number): Promise<boolean> {
-    return this.useridRepo.contains(tgUserId);
+  async has(tgUserId: number): Promise<[boolean, string]> {
+    const banned = await this.useridRepo.contains(tgUserId);
+
+    return [banned, "lols"];
   }
 
   async add(tgUserId: number): Promise<void> {

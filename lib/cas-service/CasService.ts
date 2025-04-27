@@ -9,9 +9,23 @@ export class CasService {
   ) {}
 
   async isBanned(tgUserId: number) {
-    if (await this.passFilter.has(tgUserId)) return false;
+    {
+      const [passed, reason] = await this.passFilter.has(tgUserId);
 
-    return this.discardFilter.has(tgUserId);
+      if (passed) {
+        return {
+          banned: false,
+          reason,
+        };
+      }
+    }
+
+    const [banned, reason] = await this.discardFilter.has(tgUserId);
+
+    return {
+      banned,
+      reason,
+    };
   }
 
   async ban(tgUserId: number) {
