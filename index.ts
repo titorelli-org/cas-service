@@ -9,6 +9,8 @@ import {
   lolsRepo,
   combotRepo,
   Immutable,
+  genericRepo,
+  Generic,
 } from "./lib";
 import { logger } from "./lib/logger";
 
@@ -16,6 +18,7 @@ const service = new CasService(
   new Totems(totemsRepo),
   new FilterChain(
     [
+      new Generic(genericRepo, logger),
       new Immutable(new Lols(lolsRepo, logger)),
       new Immutable(new Combot(combotRepo, logger)),
     ],
