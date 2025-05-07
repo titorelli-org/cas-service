@@ -6,10 +6,6 @@ import type { CasService } from "./cas-service";
 import casPlugin from "./fastify/plugins/cas";
 import { MongoClient } from "mongodb";
 
-import crypto from "crypto";
-
-console.log(crypto.randomUUID());
-
 export interface ServiceConfig {
   host: string;
   port: number;
