@@ -4,6 +4,8 @@ import fastify, { type FastifyInstance } from "fastify";
 import casPlugin from "./fastify/plugins/cas";
 
 export interface ServiceConfig {
+  host: string;
+  port: number;
   cas: CasService;
   logger: Logger;
 }
@@ -16,7 +18,9 @@ export class Service {
   private server: FastifyInstance;
   private readonly ready: Promise<void>;
 
-  constructor({ cas, logger }: ServiceConfig) {
+  constructor({ cas, logger, host, port }: ServiceConfig) {
+    this.host = host;
+    this.port = port;
     this.cas = cas;
     this.logger = logger;
 
