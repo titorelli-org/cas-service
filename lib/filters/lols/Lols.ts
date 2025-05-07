@@ -1,11 +1,12 @@
 import { type Logger } from "pino";
-import { type UserFilter } from "../../types";
+import { Startable, type UserFilter } from "../../types";
 import { type UseridRepo } from "./repositories/UseridRepo";
-import { makePoller, type Poller } from "reactive-poller";
+import { makePoller, Unsubscribe, type Poller } from "reactive-poller";
 import { type BanListItem } from "./types";
 
-export class Lols implements UserFilter {
+export class Lols implements UserFilter, Startable {
   private poller: Poller<any>;
+  private unsubscribe$: Unsubscribe;
 
   constructor(private useridRepo: UseridRepo, private logger: Logger) {
     this.poller = makePoller({
@@ -15,10 +16,18 @@ export class Lols implements UserFilter {
       },
       interval: 3600000 /* 1 hour */,
     });
+  }
 
-    this.poller.onData$.subscribe(this.saveList);
+  public async start() {
+    this.unsubscribe$ = this.poller.onData$.subscribe(this.saveList);
 
-    this.poller.start();
+    await this.poller.start();
+  }
+
+  public async stop() {
+    this.unsubscribe$();
+
+    await this.poller.stop();
   }
 
   async has(tgUserId: number): Promise<[boolean, string]> {
@@ -62,6 +71,8 @@ export class Lols implements UserFilter {
   }
 
   private fetchData = async () => {
+    this.logger.info("Fetching LOLS data...");
+
     const listHref = await this.getListHref("spammers-1h", "json");
 
     if (!listHref) return null;

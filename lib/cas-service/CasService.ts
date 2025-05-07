@@ -1,12 +1,20 @@
 import type { Logger } from "pino";
-import type { UserFilter } from "../types";
+import type { Startable, UserFilter } from "../types";
 
-export class CasService {
+export class CasService implements Startable {
   constructor(
-    private passFilter: UserFilter,
-    private discardFilter: UserFilter,
+    private passFilter: UserFilter & Startable,
+    private discardFilter: UserFilter & Startable,
     private logger: Logger,
   ) {}
+
+  public async start() {
+    await Promise.all([this.passFilter.start(), this.discardFilter.start()]);
+  }
+
+  public async stop() {
+    await Promise.all([this.passFilter.stop(), this.discardFilter.stop()]);
+  }
 
   async isBanned(tgUserId: number) {
     {

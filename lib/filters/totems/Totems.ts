@@ -1,9 +1,17 @@
 import type { Logger } from "pino";
-import type { UserFilter } from "../../types";
+import type { Startable, UserFilter } from "../../types";
 import type { TotemsRepo } from "./repositories/TotemsRepo";
 
-export class Totems implements UserFilter {
+export class Totems implements UserFilter, Startable {
   constructor(private totemsRepo: TotemsRepo, private logger: Logger) {}
+
+  public async start(): Promise<void> {
+    // Do nothing
+  }
+
+  public async stop(): Promise<void> {
+    // Do nothing
+  }
 
   /**
    * For totems, `has()` operation inverted in meaning:

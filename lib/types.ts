@@ -7,3 +7,9 @@ export type UserFilter = {
 
   delete(tgUserId: number): Promise<void>;
 };
+
+export interface Startable {
+  start(): Promise<void>;
+
+  stop(): Promise<void>;
+}

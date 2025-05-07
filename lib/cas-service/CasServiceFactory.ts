@@ -1,7 +1,7 @@
-import type { TotemsRepo } from "./filters/totems/repositories";
-import type { UseridRepo as LolsUseridRepo } from "./filters/lols/repositories";
-import type { UseridRepo as CombotUseridRepo } from "./filters/combot/repositories";
-import type { UseridRepo as GenericUseridRepo } from "./filters/generic/repositories";
+import type { TotemsRepo } from "../filters/totems/repositories";
+import type { UseridRepo as LolsUseridRepo } from "../filters/lols/repositories";
+import type { UseridRepo as CombotUseridRepo } from "../filters/combot/repositories";
+import type { UseridRepo as GenericUseridRepo } from "../filters/generic/repositories";
 import type { Logger } from "pino";
 import {
   Combot,
@@ -10,8 +10,8 @@ import {
   Immutable,
   Lols,
   Totems,
-} from "./filters";
-import type { UserFilter } from "./types";
+} from "../filters";
+import type { Startable, UserFilter } from "../types";
 
 export class CasServiceFactory {
   private readonly totemsRepo: TotemsRepo;
@@ -38,7 +38,7 @@ export class CasServiceFactory {
     return new Totems(this.totemsRepo, this.logger);
   };
 
-  public chain = (filters: UserFilter[]) => {
+  public chain = (filters: (UserFilter & Startable)[]) => {
     return new FilterChain(filters, this.logger);
   };
 
@@ -46,7 +46,7 @@ export class CasServiceFactory {
     return new Generic(this.genericRepo, this.logger);
   };
 
-  public immutable = (filter: UserFilter) => {
+  public immutable = (filter: UserFilter & Startable) => {
     return new Immutable(filter);
   };
 

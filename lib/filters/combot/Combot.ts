@@ -1,11 +1,12 @@
 import { Logger } from "pino";
-import { makePoller, type Poller } from "reactive-poller";
+import { makePoller, Unsubscribe, type Poller } from "reactive-poller";
 import Papa from "papaparse";
-import { type UserFilter } from "../../types";
+import { Startable, type UserFilter } from "../../types";
 import { type UseridRepo } from "./repositories/UseridRepo";
 
-export class Combot implements UserFilter {
+export class Combot implements UserFilter, Startable {
   private poller: Poller<any>;
+  private unsubscribe$: Unsubscribe;
 
   constructor(private useridRepo: UseridRepo, private logger: Logger) {
     this.poller = makePoller({
@@ -15,10 +16,18 @@ export class Combot implements UserFilter {
       },
       interval: 3600000 /* 1 hour */,
     });
+  }
 
-    this.poller.onData$.subscribe(this.saveList);
+  public async start() {
+    this.unsubscribe$ = this.poller.onData$.subscribe(this.saveList);
 
-    this.poller.start();
+    await this.poller.start();
+  }
+
+  public async stop() {
+    this.unsubscribe$();
+
+    await this.poller.stop();
   }
 
   async has(tgUserId: number): Promise<[boolean, string]> {
@@ -36,6 +45,8 @@ export class Combot implements UserFilter {
   }
 
   private fetchData = async () => {
+    this.logger.info("Fetching list from combot...");
+
     const resp = await fetch("https://api.cas.chat/export.csv");
     const text = await resp.text();
 

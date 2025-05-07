@@ -5,4 +5,5 @@ export const env = cleanEnv(process.env, {
   HOST: host({ default: "0.0.0.0" }),
   OO_AUTH_CRED: str(),
   OO_BASE_URL: url(),
+  MONGO_URL: url({ default: "mongodb://localhost:27017/" }),
 });
