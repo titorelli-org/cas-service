@@ -45,7 +45,17 @@ export class Service {
   public async listen() {
     await this.ready;
 
-    await this.leader?.start();
+    if (this.leader) {
+      await this.leader?.start();
+
+      const renew = () => {
+        this.leader?.renew();
+
+        setTimeout(renew, 700);
+      };
+
+      setTimeout(renew, 700);
+    }
 
     await this.server.listen({ port: this.port, host: this.host });
   }
