@@ -1,5 +1,5 @@
 import { env, logger, Service } from "./lib";
-import { createCasService } from "./lib/createCasService";
+import { createCasService } from "./lib";
 
 new Service({
   host: env.HOST,

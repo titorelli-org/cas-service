@@ -1,8 +1,9 @@
-import { UserFilter } from "../../types";
-import { TotemsRepo } from "./repositories/TotemsRepo";
+import type { Logger } from "pino";
+import type { UserFilter } from "../../types";
+import type { TotemsRepo } from "./repositories/TotemsRepo";
 
 export class Totems implements UserFilter {
-  constructor(private totemsRepo: TotemsRepo) {}
+  constructor(private totemsRepo: TotemsRepo, private logger: Logger) {}
 
   /**
    * For totems, `has()` operation inverted in meaning:
