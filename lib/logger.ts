@@ -17,7 +17,7 @@ export const logger = pino(
       stream: new OpenobserveTransport({
         url: `${ooBaseUrl.protocol}//${ooBaseUrl.host}`,
         organization: "default",
-        streamName: "api-service",
+        streamName: "cas-service",
         auth: { username, password },
         batchSize: 1,
         silentSuccess: true,
