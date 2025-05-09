@@ -38,9 +38,13 @@ export class UseridRepo extends BaseRepository<UseridRecord, UseridRecord[]> {
   async bulkInsert(tgUserIds: number[]) {
     const now = new Date();
 
+    this.logger.info("Lols: bulk inserting tg user ids");
+
     for (const tgUserId of tgUserIds) {
       await this.upsert(tgUserId, now);
     }
+
+    this.logger.info("Lols: done");
   }
 
   async upsert(tgUserId: number, now: Date) {
