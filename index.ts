@@ -9,10 +9,12 @@ new Service({
   host: env.HOST,
   port: env.PORT,
   cas: createCasService(logger),
-  leaderOptions: {
-    mongoUri: env.MONGO_URL,
-    collectionName: "cas-leader",
-    groupName: "titorelli-cas",
-  },
+  leaderOptions: env.FEAT_LEADER
+    ? {
+        mongoUri: env.MONGO_URL,
+        collectionName: "cas-leader",
+        groupName: "titorelli-cas",
+      }
+    : null,
   logger,
 }).listen();

@@ -31,7 +31,11 @@ export class Combot implements UserFilter, Startable {
   }
 
   async has(tgUserId: number): Promise<[boolean, string]> {
+    console.time(`Combot.has(${tgUserId})`);
+
     const banned = await this.useridRepo.contains(tgUserId);
+
+    console.timeEnd(`Combot.has(${tgUserId})`);
 
     return [banned, "cas"];
   }

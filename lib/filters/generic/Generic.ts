@@ -14,7 +14,11 @@ export class Generic implements UserFilter, Startable {
   }
 
   async has(tgUserId: number): Promise<[boolean, string]> {
+    console.time(`Generic.has(${tgUserId})`);
+
     const banned = await this.useridRepo.contains(tgUserId);
+
+    console.timeEnd(`Generic.has(${tgUserId})`);
 
     return [banned, "generic"];
   }

@@ -31,7 +31,11 @@ export class Lols implements UserFilter, Startable {
   }
 
   async has(tgUserId: number): Promise<[boolean, string]> {
+    console.time(`Lols.has(${tgUserId})`);
+
     const banned = await this.useridRepo.contains(tgUserId);
+
+    console.timeEnd(`Lols.has(${tgUserId})`);
 
     return [banned, "lols"];
   }

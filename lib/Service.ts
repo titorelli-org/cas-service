@@ -11,9 +11,11 @@ export interface ServiceConfig {
   port: number;
   cas: CasService;
   logger: Logger;
-  leaderOptions?: LeaderOptions & {
-    mongoUri: string;
-  };
+  leaderOptions?:
+    | null
+    | (LeaderOptions & {
+        mongoUri: string;
+      });
 }
 
 export class Service {
@@ -21,9 +23,11 @@ export class Service {
   private readonly port: number;
   private readonly cas: CasService;
   private leader?: Leader;
-  private readonly leaderOptions?: LeaderOptions & {
-    mongoUri: string;
-  };
+  private readonly leaderOptions?:
+    | null
+    | (LeaderOptions & {
+        mongoUri: string;
+      });
   private readonly logger: Logger;
   private server: FastifyInstance;
   private readonly ready: Promise<void>;

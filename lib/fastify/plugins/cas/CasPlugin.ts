@@ -32,7 +32,13 @@ export class CasPlugin {
         },
       },
       async ({ query: { tgUserId } }) => {
-        return this.cas.isBanned(tgUserId);
+        console.time(`isBanned(${tgUserId})`);
+
+        const result = await this.cas.isBanned(tgUserId);
+
+        console.timeEnd(`isBanned(${tgUserId})`);
+
+        return result;
       },
     );
 

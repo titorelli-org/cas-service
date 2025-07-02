@@ -19,7 +19,11 @@ export class Totems implements UserFilter, Startable {
    * user should be not banned
    */
   async has(tgUserId: number): Promise<[boolean, string]> {
+    console.time(`Totems.has(${tgUserId})`);
+
     const passed = await this.totemsRepo.contains(tgUserId);
+
+    console.timeEnd(`Totems.has(${tgUserId})`);
 
     return [passed, "totem"];
   }
