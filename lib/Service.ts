@@ -1,15 +1,20 @@
 import type { Logger } from "pino";
 import Leader from "mongo-lead";
+import { MongoClient } from "mongodb";
 import type { LeaderOptions } from "mongo-lead";
 import fastify, { type FastifyInstance } from "fastify";
+import { oidcProvider } from "@titorelli-org/fastify-oidc-provider";
+import { protectedRoutes } from "@titorelli-org/fastify-protected-routes";
+import type { JwksStore } from "@titorelli-org/jwks-store";
 import type { CasService } from "./cas-service";
 import casPlugin from "./fastify/plugins/cas";
-import { MongoClient } from "mongodb";
+import { env } from "./env";
 
 export interface ServiceConfig {
   host: string;
   port: number;
   cas: CasService;
+  jwksStore: JwksStore;
   logger: Logger;
   leaderOptions?:
     | null
@@ -28,15 +33,24 @@ export class Service {
     | (LeaderOptions & {
         mongoUri: string;
       });
+  private readonly jwksStore: JwksStore;
   private readonly logger: Logger;
   private server: FastifyInstance;
   private readonly ready: Promise<void>;
 
-  constructor({ cas, logger, leaderOptions, host, port }: ServiceConfig) {
+  constructor({
+    cas,
+    logger,
+    leaderOptions,
+    host,
+    port,
+    jwksStore,
+  }: ServiceConfig) {
     this.host = host;
     this.port = port;
     this.cas = cas;
     this.leaderOptions = leaderOptions;
+    this.jwksStore = jwksStore;
     this.logger = logger;
 
     this.ready = this.initialize();
@@ -55,6 +69,22 @@ export class Service {
   private async initialize() {
     // @ts-expect-error 2322
     this.server = fastify({ loggerInstance: this.logger, trustProxy: true });
+
+    await this.server.register(oidcProvider, {
+      origin: env.CAS_ORIGIN,
+      jwksStore: this.jwksStore,
+      logger: this.logger,
+    });
+
+    await this.server.register(protectedRoutes, {
+      origin: env.CAS_ORIGIN,
+      authorizationServers: [`${env.CAS_ORIGIN}/oidc`],
+      allRoutesRequireAuthorization: false,
+      logger: this.logger,
+      async checkToken() {
+        return true;
+      },
+    });
 
     if (this.leaderOptions) {
       const mongoConnection = await MongoClient.connect(
