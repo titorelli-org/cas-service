@@ -4,7 +4,10 @@ import { MongoClient } from "mongodb";
 import type { LeaderOptions } from "mongo-lead";
 import fastify, { type FastifyInstance } from "fastify";
 import { oidcProvider } from "@titorelli-org/fastify-oidc-provider";
-import { protectedRoutes } from "@titorelli-org/fastify-protected-routes";
+import {
+  protectedRoutes,
+  TokenValidator,
+} from "@titorelli-org/fastify-protected-routes";
 import type { JwksStore } from "@titorelli-org/jwks-store";
 import type { CasService } from "./cas-service";
 import casPlugin from "./fastify/plugins/cas";
@@ -76,13 +79,20 @@ export class Service {
       logger: this.logger,
     });
 
+    const tokenValidator = new TokenValidator({
+      jwksStore: this.jwksStore,
+      testSubject: () => true,
+      testAudience: () => true,
+      logger: this.logger,
+    });
+
     await this.server.register(protectedRoutes, {
       origin: env.CAS_ORIGIN,
       authorizationServers: [`${env.CAS_ORIGIN}/oidc`],
       allRoutesRequireAuthorization: false,
       logger: this.logger,
-      async checkToken() {
-        return true;
+      async checkToken(token, url, scopes) {
+        return tokenValidator.validate(token, url, scopes);
       },
     });
 
