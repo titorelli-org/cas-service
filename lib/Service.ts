@@ -90,7 +90,7 @@ export class Service {
     await this.server.register(protectedRoutes, {
       origin: env.CAS_ORIGIN,
       authorizationServers: [`${env.CAS_ORIGIN}/oidc`],
-      allRoutesRequireAuthorization: false,
+      allRoutesRequireAuthorization: true,
       logger: this.logger,
       async checkToken(token, url, scopes) {
         return tokenValidator.validate(token, url, scopes);
