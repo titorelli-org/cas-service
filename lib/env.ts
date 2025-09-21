@@ -8,4 +8,5 @@ export const env = cleanEnv(process.env, {
   OO_BASE_URL: url(),
   MONGO_URL: url({ default: "mongodb://localhost:27017/" }),
   FEAT_LEADER: bool({ default: true }),
+  INITIAL_ACCESS_TOKEN: str(),
 });
