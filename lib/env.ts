@@ -9,4 +9,5 @@ export const env = cleanEnv(process.env, {
   MONGO_URL: url({ default: "mongodb://localhost:27017/" }),
   FEAT_LEADER: bool({ default: true }),
   INITIAL_ACCESS_TOKEN: str(),
+  JWT_SECRET: str(),
 });
